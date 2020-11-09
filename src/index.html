@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Give Simon Feedback!</title>
+
+    <style>
+      main {
+        max-width: 768px;
+        margin: 0 auto;
+        padding: 0px 20px;
+      }
+
+      textarea {
+        height: 61vh;
+        width: calc(100% - 18px);
+        resize: none;
+        border-radius: 0.25rem;
+        border: 1px solid #e2e8f0;
+        padding: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      button:hover {
+        background-color: #2b6cb0;
+      }
+
+      button {
+        width: 100%;
+        color: white;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        border: 0;
+        background-color: #4299e1;
+        border-radius: 0.25rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 1.1rem;
+      }
+
+      h1,
+      p {
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Give Feedback to Simon!</h1>
+      <p>
+        If there's anything I can improve, I'd love to hear about it. Enter
+        anything you want into the text area below and hit "Submit" to send it
+        to me. Feedback is anonymous, so be hard on the issue - but remember to
+        stay nice &#128524;
+      </p>
+      <form id="form">
+        <textarea
+          id="feedback"
+          required
+          placeholder="In ..., you did ..., and I'd ask for you to ... next time b/c ..."
+        ></textarea>
+
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </main>
+
+    <script>
+      const formEl = document.getElementById("form");
+      const feedbackTopic = location.pathname.slice(1);
+
+      formEl.focus();
+
+      formEl.onsubmit = (evt) => {
+        evt.preventDefault();
+
+        const feedbackEl = document.getElementById("feedback");
+        const feedback = feedbackEl.value;
+
+        try {
+          fetch("/api/sendFeedback", {
+            method: "POST",
+            body: JSON.stringify({ topic: feedbackTopic, feedback }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          alert("Thanks for submitting your feedback <3");
+        } catch (error) {
+          alert("Something went wrong.");
+          throw error;
+        }
+      };
+    </script>
+  </body>
+</html>
